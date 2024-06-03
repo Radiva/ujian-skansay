@@ -120,7 +120,7 @@ $nmr = 0;
                                                                     while ($row3 = mysqli_fetch_assoc($result3)) {
                                                                         echo "<p><b>" . $row3['pertanyaan'] . "</b></p>";
                                                                         echo '<input type="hidden" name="pertanyaan_id[' . $nmr . '][]" value="' . $row3['id'] . '">';
-                                                                        echo '<input type="number" name="jawaban[' . $nmr . '][]" min=0 max=100 required style="width:100%;margin-bottom:10px;border-style: solid;border-width:3px;">';
+                                                                        echo '<input type="number" name="jawaban[' . $nmr . '][]" min=10 max=100 required style="width:100%;margin-bottom:10px;border-style: solid;border-width:3px;">';
                                                                     }
                                                                     ?>
 

@@ -1,7 +1,7 @@
 <?php
 	include "../../database/config.php";
 
-        $query = "SELECT id, kode, nama, nip FROM guru";
+        $query = "SELECT id, username, nama_lengkap, nip FROM guru";
         $result = mysqli_query($conn, $query);
         $arr = array();
         $arr1 = array();
@@ -11,8 +11,8 @@
             while($row = mysqli_fetch_assoc($result)) {
                 $arr["id"] = $row["id"];
                 $arr["no"] = $i;
-                $arr["nama"] = $row["nama"];
-                $arr["kode"] = $row["kode"];
+                $arr["nama"] = $row["nama_lengkap"];
+                $arr["kode"] = $row["username"];
                 $arr["nip"] = $row["nip"];
                 $arr1[] = $arr;
                 $i++;

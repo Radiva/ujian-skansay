@@ -87,13 +87,13 @@ if(!isset($_SESSION["user_id"]))
                                 <div class="row">
                                   <div class="col-md-10">
                                     <?php
-                                    $query2 = "SELECT * FROM pertanyaan_pilihan WHERE pertanyaan_id = '". $row['id'] ."' ORDER BY bobot DESC";
-                                    $result2 = mysqli_query($conn, $query2);
-                                    if(mysqli_num_rows($result2) > 0) {
-                                      while($row2 = mysqli_fetch_assoc($result2)) {
-                                        echo "<p>". $row2['bobot'] ." - ". $row2['jawaban'] . "</p>";
-                                      }
-                                    }
+                                    // $query2 = "SELECT * FROM pertanyaan WHERE pertanyaan_id = '". $row['id'] ."' ORDER BY bobot DESC";
+                                    // $result2 = mysqli_query($conn, $query2);
+                                    // if(mysqli_num_rows($result2) > 0) {
+                                    //   while($row2 = mysqli_fetch_assoc($result2)) {
+                                    //     echo "<p>". $row2['bobot'] ." - ". $row2['jawaban'] . "</p>";
+                                    //   }
+                                    // }
                                     ?>
                                   </div>
                                   <div class="col-md-4"> 

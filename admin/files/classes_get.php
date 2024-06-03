@@ -2,7 +2,7 @@
     $info;
 	include "../../database/config.php";
    
-        $classes = "SELECT * FROM class ";
+        $classes = "SELECT * FROM kelas ";
         $result = mysqli_query($conn, $classes);
                 
         if (mysqli_num_rows($result) > 0) {

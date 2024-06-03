@@ -1,7 +1,7 @@
 <?php
 	include "../../database/config.php";
 
-        $query = "SELECT siswa.*, class.nama AS nama_class FROM siswa JOIN class ON class.id = siswa.class_id where siswa.class_id = '".$_POST['class_name']."' ";
+        $query = "SELECT siswa.*, kelas.nama AS nama_class FROM siswa JOIN kelas ON kelas.id = siswa.class_id where siswa.class_id = '".$_POST['class_name']."' ";
         $result = mysqli_query($conn, $query);
         $arr = array();
         $arr1 = array();

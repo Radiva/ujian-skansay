@@ -12,21 +12,23 @@
         }
 
         header("Content-type: application/vnd-ms-excel");
-        header("Content-Disposition: attachment; filename=" . $nama_tema . ".xls");
+        header("Content-Disposition: attachment; filename=" . $nama_tema . ".xlsx");
 
-        $query = "SELECT S.id, S.nama, S.nis, C.nama AS kelas, G.name AS kelompok, N.* 
+        $query = "SELECT S.id, S.nama, S.nis, C.nama AS kelas, G.name AS kelompok, N.teacher_id, N.hitung, N.id_category , N.nilai
             FROM siswa AS S 
-            JOIN class AS C ON C.id = S.class_id 
-            JOIN grup_siswa AS GS ON GS.siswa_id = S.id 
-            JOIN `group` AS G ON G.id = GS.group_id 
-            LEFT JOIN (SELECT SJ.siswa_id, SJ.teacher_id, SUM(PP.bobot) AS bobot, COUNT(*) AS hitung, P.id_category 
-                FROM `siswa_jawaban` AS SJ 
-                JOIN pertanyaan_pilihan AS PP ON PP.ID = SJ.answer_id 
-                JOIN pertanyaan AS P ON P.id = PP.pertanyaan_id 
-                JOIN ujian AS U ON U.id = SJ.ujian_id 
-                WHERE U.tema = $id_theme 
+            JOIN kelas AS C ON C.id = S.class_id 
+            LEFT JOIN kelompok_siswa AS GS ON GS.siswa_id = S.id 
+            LEFT JOIN kelompok AS G ON G.id = GS.group_id 
+            LEFT JOIN (SELECT SJ.siswa_id, SJ.teacher_id, COUNT(*) AS hitung, P.id_category, SUM(SJ.nilai) AS nilai 
+                FROM siswa_nilai AS SJ 
+                JOIN pertanyaan AS P ON P.id = SJ.question_id
+                JOIN jadwal_kelompok AS JK ON JK.id = SJ.jadwal_kelompok_id
+                JOIN jadwal AS U ON U.id = JK.ujian_id 
+                WHERE U.tema = $id_theme
                 GROUP BY P.id_category, SJ.teacher_id, SJ.siswa_id 
-                ORDER BY SJ.siswa_id, SJ.teacher_id, P.id_category) N ON N.siswa_id = S.id";
+                ORDER BY SJ.siswa_id, SJ.teacher_id, P.id_category) N ON N.siswa_id = S.id
+                UNION ALL
+                SELECT 0 id, 'dummy' nama, '0000000' nis, null kelas, null kelompok, null teacher_id, null hitung, null id_category, 0 nilai;";
 
         $re = mysqli_query($conn, $query);
         $arr = array();
@@ -132,22 +134,22 @@
 
                     switch ($row["id_category"]) {
                         case '1':
-                            $arr["p1"][0] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                            $arr["p1"][0] = ($row["nilai"] / ($row["hitung"]));
                             $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                             break;
                         
                         case '2':
-                            $arr["p1"][1] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                            $arr["p1"][1] = ($row["nilai"] / ($row["hitung"]));
                             $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                             break;
 
                         case '3':
-                            $arr["p1"][2] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                            $arr["p1"][2] = ($row["nilai"] / ($row["hitung"]));
                             $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                             break;
 
                         case '4':
-                            $arr["p1"][3] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                            $arr["p1"][3] = ($row["nilai"] / ($row["hitung"]));
                             $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
 
                             break;
@@ -161,44 +163,44 @@
                     if ($nopeng == 1) {
                         switch ($row["id_category"]) {
                             case '1':
-                                $arr["p1"][0] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p1"][0] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                                 break;
                             
                             case '2':
-                                $arr["p1"][1] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p1"][1] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                                 break;
 
                             case '3':
-                                $arr["p1"][2] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p1"][2] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                                 break;
 
                             case '4':
-                                $arr["p1"][3] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p1"][3] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p1"][4] = ($arr["p1"][0] + $arr["p1"][1] + $arr["p1"][2] + $arr["p1"][3]) / 4;
                                 break;
                         }
                     } else if ($nopeng == 2) {
                         switch ($row["id_category"]) {
                             case '1':
-                                $arr["p2"][0] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p2"][0] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p2"][4] = ($arr["p2"][0] + $arr["p2"][1] + $arr["p2"][2] + $arr["p2"][3]) / 4;
                                 break;
                             
                             case '2':
-                                $arr["p2"][1] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p2"][1] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p2"][4] = ($arr["p2"][0] + $arr["p2"][1] + $arr["p2"][2] + $arr["p2"][3]) / 4;
                                 break;
 
                             case '3':
-                                $arr["p2"][2] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p2"][2] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p2"][4] = ($arr["p2"][0] + $arr["p2"][1] + $arr["p2"][2] + $arr["p2"][3]) / 4;
                                 break;
 
                             case '4':
-                                $arr["p2"][3] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p2"][3] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p2"][4] = ($arr["p2"][0] + $arr["p2"][1] + $arr["p2"][2] + $arr["p2"][3]) / 4;
 
                                 break;
@@ -206,22 +208,22 @@
                     } else if ($nopeng == 3) {
                         switch ($row["id_category"]) {
                             case '1':
-                                $arr["p3"][0] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p3"][0] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p3"][4] = ($arr["p3"][0] + $arr["p3"][1] + $arr["p3"][2] + $arr["p3"][3]) / 4;
                                 break;
                             
                             case '2':
-                                $arr["p3"][1] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p3"][1] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p3"][4] = ($arr["p3"][0] + $arr["p3"][1] + $arr["p3"][2] + $arr["p3"][3]) / 4;
                                 break;
 
                             case '3':
-                                $arr["p3"][2] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p3"][2] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p3"][4] = ($arr["p3"][0] + $arr["p3"][1] + $arr["p3"][2] + $arr["p3"][3]) / 4;
                                 break;
 
                             case '4':
-                                $arr["p3"][3] = ($row["bobot"] / ($row["hitung"] * 4)) * 100;
+                                $arr["p3"][3] = ($row["nilai"] / ($row["hitung"]));
                                 $arr["p3"][4] = ($arr["p3"][0] + $arr["p3"][1] + $arr["p3"][2] + $arr["p3"][3]) / 4;
                                 break;
                         }
